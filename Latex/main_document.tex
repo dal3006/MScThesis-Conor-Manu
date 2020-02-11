@@ -1,0 +1,118 @@
+
+%% begin preamble%%
+
+% set the document class
+\documentclass[12pt]{report}
+
+\usepackage[utf8]{inputenc}
+
+% prepare the document for images
+\usepackage{graphicx}
+% sets the directory where images are stored
+\graphicspath{ {images/} }
+
+% set spacing package to change the spacing for the table of contents
+\usepackage{setspace}
+
+% package to create captions and subcaptions for figures and tables
+\usepackage[labelfont=bf]{caption}
+\usepackage{subcaption}
+
+% package to type piecewise functions
+\usepackage{amsmath}
+
+% using the geometry package to set margins of the document
+
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
+
+
+% using packages to add in headers and footers
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% specifying inputs for headers and footers
+\fancyhead{}
+\fancyhead[RO,LE]{Thesis Title}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,CE]{Chapter \thechapter}
+
+% changing the thickness of the lines in the headers and footers:
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% using the biblatex package to create references
+
+
+\usepackage[style=apa,sorting=nyt, maxcitenames=2, natbib=true,backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+% This allows for an additional line-breaking pass with the amount of "tolerable" white space per line increased by 1em.
+\emergencystretch=1em
+
+
+\title{Thesis Title}
+\author{Author Name}
+\date{Day Month Year}
+
+%% end preamble%%
+
+\begin{document}
+
+\input{titlepage}
+
+\input{abstract}
+
+\doublespacing
+\tableofcontents
+\singlespacing
+
+
+\listoffigures
+
+\listoftables
+
+% When writing something like a thesis its worth splitting up the document into % multiple .tex files. It's also wise to organise the project using folders;  %therefore, we'll create two new folders, one for all the images used in the %project and one for all the .tex files making up the main body of the thesis.
+
+%\chapter*{Abstract}
+%Abstract goes here
+
+\chapter*{Acknowledgements}
+I want to thank my supervisor/parents/classmates...
+
+\chapter{Introduction}
+\input{chapters/introduction}
+
+\chapter{Research Questions}
+\input{chapters/chapter02}
+ 
+\chapter{Smart City}
+\input{chapters/chapter03}
+ 
+\chapter{Forecasting Methods}
+\input{chapters/chapter04}
+
+\chapter{Data}
+\input{chapters/chapter05}
+
+\chapter{Analyses and Results}
+\input{chapters/chapter06}
+
+\chapter{Discussion}
+\input{chapters/chapter07}
+
+\chapter{Conclusion}
+\input{chapters/conclusion}
+
+\appendix
+\chapter{Appendix}
+\input{chapters/appendix}
+
+% title option specifies the name of the bibliography
+\printbibliography[title = References]
+
+
+\end{document}
+
