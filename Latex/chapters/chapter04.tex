@@ -12,7 +12,7 @@
 
 According to \textcite{hastie2009} the bagging estimate is defined by
 
-\begin{equation} 
+\begin{equation} \label{eq: bagging}
 \hat{f}_{bag}(x)=\frac{1}{B} \sum_{b=1}^B\hat{f}^{*b}(x)
 \end{equation}
 
@@ -21,10 +21,10 @@ Bagging is therefore a general-purpose technique for reducing the variance of a 
 
 \noindent The well-established bagging method was first introduced by \textcite{breiman1996} but it was not successfully applied in a time series forecasting context until 2016.\\
 According to \textcite{petropoulos2018} the complication with time series consists in accounting for non-stationarity and autocorrelation in the bootstrapping procedure in order to produce bootstrapped samples that resemble the original data.\\
-\textcite{bergmeir} propose a bootstrapping procedure for time series as illustrated in Figure \ref{fig: Bootstrapping procedure TS} that includes a Box-Cox transformation in order to stabilize the variance and a decomposition either in form of the loess method to extract trend and remainder in case of a non-seasonal time series or an STL decomposition in order to break the series down into the trend, seasonal and remainder components. 
+\textcite{bergmeir} propose a bootstrapping procedure for time series as illustrated in \cref{fig: Bootstrapping procedure TS} that includes a Box-Cox transformation in order to stabilize the variance and a decomposition either in form of the loess method to extract trend and remainder in case of a non-seasonal time series or in form of a STL decomposition in order to break a seasonal series down into the trend, seasonal and remainder components. 
 The Box-Cox transformation, which was first introduced by \textcite{box1964}, is defined as follows:
 
-\begin{equation}
+\begin{equation} \label{eq: box cox}
 	w_{t} =
 	\begin{cases}
 	log(y_{t}), & \lambda=0 \\
@@ -33,7 +33,7 @@ The Box-Cox transformation, which was first introduced by \textcite{box1964}, is
 \end{equation}
 
 The optimal $\lambda \in [0,1]$ is chosen by dividing the series into subseries of length equal to the seasonality and minimzing the coefficient of variation $s/m^{(1-\lambda)}$ across those subseries, where $s$ stands for the standard deviation and $m$ for the sample mean of the subseries.
-The authors then apply a bootstrapping method that allows for autocorrelation, the moving block bootstrap (MBB) as suggested by \textcite{kunsch1989}, to the extracted remainder of the series. In the next step, the series is reconstructed from its structural components, i.e. trend, seasonality, and the bootstrapped remainder. Finally, the Box-Cox transformation is inverted. The whole process is then repeated in order to obtain the bootstrapped series.\\ 
+The authors then apply a bootstrapping method that allows for autocorrelation, the \acrfull{mbb} as suggested by \textcite{kunsch1989}, to the extracted remainder of the series. In the next step, the series is reconstructed from its structural components, i.e. trend, seasonality, and the bootstrapped remainder. Finally, the Box-Cox transformation is inverted. The whole process is then repeated in order to obtain the bootstrapped series.\\ 
 
 
 \begin{figure} [h]
@@ -43,15 +43,33 @@ The authors then apply a bootstrapping method that allows for autocorrelation, t
 \label{fig: Bootstrapping procedure TS}
 \end{figure}
 
+
 \textcite{bergmeir} find that the ensemble of bagged exponential smoothing models outperforms the regular exponential smoothing model consistently for monthly data on the M3 forecasting competition dataset, which is a common medium of comparison of newly introduced forecasting methods with existing state of the art models.
 
 
 \subsection{Tree-based models for Time Series}
 
-\textcite{galicia2019} propose a dynamic ensemble model for big data time series forecasting purposes as illustrated in Figure \ref{fig: Dynamic ensemble model} based on the three base models decision trees, random forests and gradient boosted trees. The ensemble weights are computed by weighted least squares assigning higher weights to more accurate ensemble members according to their past performance.\\
+In general, the purpose of decision tree based methods, which are typically used for regression or classification problems, is to segment the predictor space into a number of simpler regions. The name stems from the fact that the set of splitting rules can be described with a tree \parencite{james2013}. \cref{fig: decision tree and prediction surface} illustrates the tree resulting from the partition of a two-dimensional feature space and also depicts the prediction surface resulting from that tree.\\
 
+\begin{figure} [h]
+\centering
+\includegraphics[scale=0.6]{DT}
+\caption{Decision tree and resulting prediction surface (adapted from \textcite{james2013})}
+\label{fig: decision tree  and prediction surface}
+\end{figure}
+
+The regions $R_{j}, j=1,...,5 $ are called terminal nodes, the points $t_{i}, i=1,...,4 $ where the predictor space, i.e. the set of possible values for predictors $X_{1},X_{2},...,X_{p}$, is split are defined as internal nodes and the connecting segments are called branches.\\
+The goal in the attempt to split the feature space into $J$ distinct and non-overlapping regions $R_{1}, R_{2},...,R_{J}$ is to minimize the \acrfull{rss} in case of a regression tree as given below, where $\hat{y}_{R_{j}}$ is the mean response for the training observations in the $j$-th box \parencite{james2013}:
+
+\begin{equation} \label{eq: RSS}
+	RSS = \sum_{j=1}^{J} \sum_{i \in R_{j}} (y_{i}-\hat{y}_{R_{j}})^{2}
+\end{equation}
+
+\noindent Another key ingredient of decision trees is the concept of "recursive binary splitting" which refers to a top-down approach to successively splitting the predictor space. Mathematically, the predictor $ X_{j}$ and the cutting point $t$ are chosen such that the split of the predictor space into the regions $\{X|X_{j} < t\}$ and $\{X|X_{j} \geq t\}$ leads to the maximum reduction in the RSS.
+
+\textcite{galicia2019} propose a dynamic ensemble model for big data time series forecasting purposes as illustrated in \cref{fig: Dynamic ensemble model} based on the three base models decision trees, random forests and gradient boosted trees. The ensemble weights are computed by weighted least squares assigning higher weights to more accurate ensemble members according to their past performance.\\
  
-\noindent The authors found that the ensemble model outperformed the individual base models on a high sampling frequency dataset for the Spanish electricity market in terms of prediction accuracy as evidenced by lower mean absolute errors (MAE) and root mean squared errors (RMSE). Moreover, they found that the dynamic ensemble model could outperform Artificial Neural Network (ANN) and deep learning (DL) algorithms when evaluating forecast errors by yielding the lowest MAE and RMSE values on an Australia solar power dataset.
+\noindent The authors found that the ensemble model outperformed the individual base models on a high sampling frequency dataset for the Spanish electricity market in terms of prediction accuracy as evidenced by a lower \acrfull{mae} and \acrfull{rmse}. Moreover, they found that the dynamic ensemble model could outperform \acrfull{ann} and \acrfull{dl} algorithms when evaluating forecast errors by yielding the lowest MAE and RMSE values on an Australian solar power dataset.
 
 \begin{figure} [h]
 \centering
@@ -61,3 +79,39 @@ The authors then apply a bootstrapping method that allows for autocorrelation, t
 \end{figure}
 
 \subsection{Neural Network Models}
+
+Artificial neural networks (ANNs) refer to forecasting models which are based on mathematical models of the brain and which allow for complex non-linear relationships between a label and features.\\
+
+\noindent Generally, neural networks are composed of neurons which are organized in layers, where the predictors form the inputs in the bottom layer and the forecasts form the outputs in the top layer. Forecasts are obtained by a linear combination of the predictors. The weights attached to those predictors are selected using a learning algorithm which minimizes a cost function, such as the \acrfull{mse} \parencite{hyndman2018}.
+
+\begin{figure} [h]
+\centering
+\includegraphics[scale=0.5]{NN}
+\caption{Multilayer feed-forward network with one hidden layer and three hidden neurons (adapted from \textcite{hyndman2018})}
+\floatfoot{\textbf{Notes:} The outputs of the nodes in one layer are inputs of the nodes in the next layer and the inputs to each single node are a weighted linear combination. In the hidden layer, the input for the next layer is first transformed using a non-linear function, such as the sigmoid function, in order to make the neural netwok more robust to extreme outliers.}
+\label{fig: Multilayer NN}
+\end{figure}
+
+\noindent \cref{fig: Multilayer NN} shows a multilayer feed-forward neural network with a single hidden layer, where the inputs to each node are weighted linear combinations. The addition of a hidden layer makes the neural network non-linear.\\ 
+\newpage
+The inputs to hidden neuron $j$ in \cref{fig: Multilayer NN} is given by
+
+\begin{equation} \label{eq: inputs hidden neuron}
+	z_{j} = b_{j} + \sum_{i=1}^4 w_{i,j}x_{i}
+\end{equation}
+
+The parameters $b_{1},...,b_{3}, w_{1,1},...,w_{4,3}$ are learned from the data, where the weights $w_{i,j}$ are initially set to random values and then updated from the observed data. 
+According to \textcite{hyndman2018}, the number of hidden layers and the number of neurons contained in the hidden layers is usually determined in advance by cross-validation.
+
+\noindent \textcite{hyndman2018} argue that neural networks are not based on a well-defined stochastic model and therefore the derivation of prediction intervals for forecasts from neural network models is not as trivial as for the previous methods outlined in this paper.\\
+
+The \acrfull{lstmnn} was first introduced by \textcite{hochreiter1997}. The LSTM architecture is shown in \cref{fig: LSTM architecture}. 
+\newpage
+According to \textcite{ma2015}, a LSTM NN consists of an input layer, a recurrent hidden layer and an output layer. In contrast to a regular ANN, the hidden layer contains a memory block with a memory cell to memorize the temporal state as well as two gates to control the input and output activations into the block. Moreover, a forget gate forms part of the memory block to allow for a reset in case the information flow is out of date.
+
+\begin{figure} [h]
+\centering
+\includegraphics[scale=1.2]{LSTM}
+\caption{LSTM neural network architecture (adapted from \textcite{ma2015})}
+\label{fig: LSTM architecture}
+\end{figure}

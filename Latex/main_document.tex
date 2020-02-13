@@ -5,7 +5,33 @@
 \documentclass[12pt]{report}
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 
+%package to create a list of acronyms which appears in the table of contents
+\usepackage[acronym, toc, nopostdot, nogroupskip]{glossaries}
+
+% acronym list entries:
+\newacronym{mbb}{MBB}{moving block bootstrap}
+\newacronym{rss}{RSS}{residual sum of squares}
+\newacronym{mae}{MAE}{mean absolute error}
+\newacronym{rmse}{RMSE}{root mean squared error}
+\newacronym{ann}{ANN}{Artificial Neural Network}
+\newacronym{dl}{DL}{Deep Learning}
+\newacronym{mse}{MSE}{mean squared error}
+\newacronym{lstmnn}{LSTM NN}{Long Short Term Memory neural network}
+
+% end acronym list entries
+
+\makenoidxglossaries 
+
+% aligns the description entries in the list of acronyms
+\glsfindwidesttoplevelname
+\setglossarystyle{alttree}
+
+% setting the space between acronym and description
+\renewcommand\glstreepredesc{\qquad} 
+
+ 
 % prepare the document for images
 \usepackage{graphicx}
 % sets the directory where images are stored
@@ -18,44 +44,68 @@
 \usepackage[labelfont=bf]{caption}
 \usepackage{subcaption}
 
+% package to include notes underneath figures/tables
+\usepackage{floatrow}
+
 % package to type piecewise functions
 \usepackage{amsmath}
+
+% color package for formatting URLs 
+\usepackage[dvipsnames]{xcolor}
+
+% packages for cross references within the Latex document
+\usepackage{varioref}
+
+% package to create hyperlinks within the Latex document (including the bibliography if url is specified)
+
+\usepackage[backref=true]{hyperref}
+
+% the cleverref package   enhances   LATEX’s   cross-referencing   features,allowing the format of cross-references to be determined automatically ac-cording  to  the  “type”  of  cross-reference  (equation,  section,  etc.)   and  thecontext in which the cross-reference is used
+\usepackage[capitalise, noabbrev]{cleveref}
+
+% formatting the URLs
+\hypersetup{colorlinks=true, linkcolor=BrickRed, urlcolor=RoyalBlue, citecolor=BlueViolet}
+\urlstyle{same}
+
 
 % using the geometry package to set margins of the document
 
 \usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
 
+% creating the option to display bookmarks in the compiled pdf document
+\usepackage{bookmark}
 
-% using packages to add in headers and footers
+% using packages to add in customized headers and footers
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-% specifying inputs for headers and footers
-\fancyhead{}
-\fancyhead[RO,LE]{Thesis Title}
-\fancyfoot{}
-\fancyfoot[LE,RO]{\thepage}
-\fancyfoot[LO,CE]{Chapter \thechapter}
+% separation lines for header and footer
+
+
+% specifying inputs for headers and footers (commented out for now)
+
+
+\fancyhead[RO,LE]{Chapter \thechapter}
+\fancyfoot[C]{\thepage}
+
 
 % changing the thickness of the lines in the headers and footers:
 
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0 pt}
+\renewcommand{\footrulewidth}{0 pt}
 
 % using the biblatex package to create references
 
-
 \usepackage[style=apa,sorting=nyt, maxcitenames=2, natbib=true,backend=biber]{biblatex}
 \addbibresource{references.bib}
+
+
 
 % This allows for an additional line-breaking pass with the amount of "tolerable" white space per line increased by 1em.
 \emergencystretch=1em
 
 
-\title{Thesis Title}
-\author{Author Name}
-\date{Day Month Year}
 
 %% end preamble%%
 
@@ -69,10 +119,23 @@
 \tableofcontents
 \singlespacing
 
+\thispagestyle{plain}
+\clearpage
 
 \listoffigures
 
+\clearpage
+
 \listoftables
+
+% displays acronyms in boldface
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
+% changes the vertical space between two entries
+\renewcommand*{\arraystretch}{1.3}
+% prints the glossary (list of acronyms)
+\printnoidxglossary[type=\acronymtype, sort = letter, title = List of Acronyms, nonumberlist, style = long]
+
+\clearpage
 
 % When writing something like a thesis its worth splitting up the document into % multiple .tex files. It's also wise to organise the project using folders;  %therefore, we'll create two new folders, one for all the images used in the %project and one for all the .tex files making up the main body of the thesis.
 
@@ -110,8 +173,15 @@ I want to thank my supervisor/parents/classmates...
 \chapter{Appendix}
 \input{chapters/appendix}
 
+
+% increase spacing between two entries
+\setlength\bibitemsep{0.0\itemsep}
+
 % title option specifies the name of the bibliography
 \printbibliography[title = References]
+
+\thispagestyle{plain}
+
 
 
 \end{document}
